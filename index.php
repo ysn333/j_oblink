@@ -97,7 +97,7 @@
                                   <!-- Add more options here -->
                               </select>
                           </div>
-                          <div class="col-sm-12 col-md-3 col-lg-3 mb-3">
+                          <div class=" salaryRangeSelect col-sm-12 col-md-3 col-lg-3 mb-3">
                               <select class="custom-select" id="CompanyName" name="CompanyName">
                                   <option selected>Select a Company</option>
                                   <!-- Add more options here -->
@@ -112,7 +112,7 @@
                                   ?>
                               </select>
                           </div>
-                              <div class="col-sm-12 col-md-3 col-lg-3 mb-3">
+                              <div class=" salaryRangeSelect col-sm-12 col-md-3 col-lg-3 mb-3">
                                   <select class="custom-select" id="typePost" name="typePost">
                                       <option selected>Select a Type of Post</option>
                                       <option value="CDI">CDI</option>
@@ -120,7 +120,7 @@
                                       <!-- Add more options here -->
                                   </select>
                               </div>
-                              <div class="col-sm-12 col-md-3 col-lg-3 mb-3">
+                              <div class=" salaryRangeSelect col-sm-12 col-md-3 col-lg-3 mb-3">
                                   <select class="custom-select" id="duree_contrat" name="duree_contrat">
                                       <option selected>Select a duree contrat</option>
                                       <?php
