@@ -1,27 +1,33 @@
 <?php
 include 'includes/config.php';
-session_start();
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    if (!isset($_FILES['img'])) {
-        $filename = $_FILES['img']['name'];
-
-        $extension = pathinfo($filename, PATHINFO_EXTENSION);
-        $basename = bin2hex(random_bytes(8));
-        $newFilename = "$basename.$extension";
-
-        $uploadDir = '../uploads/profiles/';
-        $uploadPath = $uploadDir . $newFilename;
-        move_uploaded_file($_FILES['img']['tmp_name'], $uploadPath);
-
-        $img = $newFilename;
-    } else {
-        $img = 'default.png';
-    }
-
+    if (empty($jobTitle) ) {
+        // All required fields are filled
+        if (isset($_FILES['img']) && $_FILES['img']['error'] !== UPLOAD_ERR_NO_FILE) {
+            // Image file is uploaded
+            $filename = $_FILES['img']['name'];
+            $extension = pathinfo($filename, PATHINFO_EXTENSION);
+            $basename = bin2hex(random_bytes(8));
+            $newFilename = "$basename.$extension";
+        
+            $uploadDir = '../uploads/profiles/';
+            $uploadPath = $uploadDir . $newFilename;
+            move_uploaded_file($_FILES['img']['tmp_name'], $uploadPath);
+        
+            $img = $newFilename;
+        } else {
+            $img = 'default.png';
+        }
+        
+        
     if (empty($jobTitle) && empty($city) && empty($jobDescription) && empty($qualifications)) {
         $jobTitle = isset($_POST['job_title']) ? $_POST['job_title'] : null;
         $city = isset($_POST['city']) ? $_POST['city'] : null;
@@ -64,4 +70,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     }
 
+}
 }

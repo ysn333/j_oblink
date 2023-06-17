@@ -311,6 +311,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
       <style>
+        
           .intro {
               background-image: url(img/map.svg)!important;
               background-color: #ffff!important;
@@ -327,6 +328,10 @@
               border-bottom:1px solid #fff ;
           }
 
+          .card-img-top {
+            border-top-right-radius: 16px;
+            border-top-left-radius: 16px;
+          }
           .icon_1 {
               margin-left: 10px;
           }
