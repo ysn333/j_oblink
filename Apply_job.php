@@ -344,34 +344,33 @@ $JobID = $_GET['JobID'];
 </style>
 
 <script>
+
     function validateFileExtension() {
+
         var fileInput = document.getElementById('cv');
         var fileName = fileInput.value;
         var allowedExtensions = ['.pdf', '.doc', '.docx'];
-
-        // Extract the file extension
         var extension = fileName.substring(fileName.lastIndexOf('.'));
-
-        // Check if the extension is allowed
         if (allowedExtensions.indexOf(extension.toLowerCase()) === -1) {
-            // Invalid file extension
             alert('Invalid file extension. Please select a PDF, DOC, or DOCX file.');
-            fileInput.value = ''; // Reset the file input
+            fileInput.value = ''; 
             return;
         }
 
-        // File extension is valid, update the filename display
         updateFileName();
     }
+
     function updateFileName() {
         var input = document.getElementById('cv');
         var label = document.getElementById('cv-label');
         var fileName = input.files[0].name;
         label.innerHTML = '<i class="fas fa-upload"></i> ' + fileName;
         label.classList.add('file-name');
+
     }
+
 </script>
-<div class="fb2022-copy">solicode 2022 copyright</div>
+<div class="fb2022-copy">Solicode 2022 copyright</div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </body>

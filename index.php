@@ -159,7 +159,6 @@
                   <main>
                       <div class="row" >
                           <?php
-                          // Get the search criteria
                           $JobTitle = isset($_POST['JobTitle']) ? $_POST['JobTitle'] : '';
                           $city = isset($_POST['city']) ? $_POST['city'] : '';
                           $salaryRange = isset($_POST['salaryRange']) ? $_POST['salaryRange'] : '';
@@ -170,7 +169,6 @@
 
                           $sql = "SELECT * FROM offres INNER JOIN employeur e ON offres.EmployeurID = e.EmployeurID ORDER by `JobID` DESC";
 
-                          // Append search criteria to the SQL query if provided
                           if (!empty($JobTitle)) {
                               $sql .= " AND offres.JobTitle LIKE '%$JobTitle%'";
                           }
@@ -288,7 +286,6 @@
 
          <!--job offers-->
 <?php include 'Admin_Joblink/includes/num.php';?>
-
           <!--Top Notch Service-->
           <div class="service text-center">
             <h1>Top Notch <span class="green">Service</span></h1>
