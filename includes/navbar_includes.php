@@ -1,6 +1,8 @@
 
 
-<?php if (!isset($_SESSION['Email'])){?>
+<?php
+$CandidateID = 27;
+    if (!isset($_SESSION['Email'])){?>
     <nav class="navbar navbar-expand-xl fixed-top">
         <div class="container">
             <a class="navbar-brand" href="../index.php"><img claass="w-100" src="../img/Gray%20Professional%20Minimalist%20CV%20Resume%20(1).jpg" alt=""></a>
@@ -51,24 +53,24 @@
                         </a>
                         <a href="notification.php">
                             <?php
-                            $selectNotificationsQuery = "SELECT COUNT(*) as `NotificationCount` FROM `Notifications`";
-                            $stmt = $pdo->query($selectNotificationsQuery);
-                            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-                            $notificationCount = $result['NotificationCount'];
-
-
-
-                            $hasNotifications = $notificationCount > 0;
-                            $notificationIconClass = $hasNotifications ? "fa-sharp fa-solid fa-bell has-notifications" : "";
-                            $notificationIcon = $hasNotifications ? '' : '<i class="fa-sharp fa-solid fa-bell"></i>';
-
-                            if ($notificationCount > 0) {
-                                echo '<span class="span ' . $notificationIconClass . '">' . $notificationIcon . '</span>';
-                                echo '<span class=" notification-count">' . $notificationCount . '</span>';
-                            }else {
-                                echo '<span class=" span' . $notificationIconClass . '">' . $notificationIcon . '</span>';
-                            }
-
+                    $selectNotificationsQuery = "SELECT COUNT(*) as `NotificationCount` FROM `Notifications` WHERE UserID = :UserID ";
+                    $stmt = $pdo->prepare($selectNotificationsQuery);
+                    $stmt->bindParam(':UserID', $CandidateID);
+                    $stmt->execute();
+                    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $notificationCount = $result['NotificationCount'];
+                    
+                    $hasNotifications = $notificationCount > 0;
+                    $notificationIconClass = $hasNotifications ? "fa-sharp fa-solid fa-bell has-notifications" : "";
+                    $notificationIcon = $hasNotifications ? '' : '<i class="fa-sharp fa-solid fa-bell"></i>';
+                    
+                    if ($notificationCount > 0) {
+                        echo '<span class="span ' . $notificationIconClass . '">' . $notificationIcon . '</span>';
+                        echo '<span class="notification-count">' . $notificationCount . '</span>';
+                    } else {
+                        echo '<span class="span ' . $notificationIconClass . '">' . $notificationIcon . '</span>';
+                    }
+                    
                             ?>
 
 
@@ -76,7 +78,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="../employeur/register.php" data-toggle="modal" data-target="#userModal">Entreprises / <span class="span-Publier">Publier une annonce</span></a>
-
+                        
                     </li>
                 </ul>
             </div>

@@ -6,7 +6,6 @@ if (!isset($_SESSION["Email"])) {
     header("location: login.php");
 }
 
-$CandidateID = $_SESSION['CandidateID'];
 $full_name = $_SESSION['full_name'] ;
 $Email = $_SESSION['Email'] ;
 $PhoneNumber = $_SESSION['PhoneNumber'];

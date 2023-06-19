@@ -80,6 +80,7 @@ session_start();
                             <!-- Dropdown menu items -->
                             <li><a class="dropdown-item" href="update_job.php?JobID=' . $row["JobID"] . '">mise à jour de l"emploi</a></li>
                             <li><a class="dropdown-item" href="show_details_job.php?JobID=' . $row["JobID"] . '">see listing details</a></li>
+                            <li><a class="dropdown-item" href="delete_job.php?JobID=' . $row["JobID"] . '">Delete job</a></li>
 
                         </ul>
                     </div>
