@@ -168,7 +168,7 @@
                           $dureeContrat = isset($_POST['duree_contrat']) ? $_POST['duree_contrat'] : '';
 
 
-                          $sql = "SELECT * FROM offres INNER JOIN employeur e ON offres.EmployeurID = e.EmployeurID";
+                          $sql = "SELECT * FROM offres INNER JOIN employeur e ON offres.EmployeurID = e.EmployeurID ORDER by `JobID` DESC";
 
                           // Append search criteria to the SQL query if provided
                           if (!empty($JobTitle)) {
@@ -209,8 +209,17 @@
                           $stmt->execute();
                           $results = $stmt->fetchAll();
 
-                          if (count($results) > 0) {
-                              foreach ($results as $row) {
+            $perPage = 6; 
+            $totalOffers = count($results);
+            $totalPages = ceil($totalOffers / $perPage);
+
+            $currentPage = isset($_GET['page']) ? intval($_GET['page']) : 1;
+            $start = ($currentPage - 1) * $perPage;
+            $end = $start + $perPage;
+            $offersToShow = array_slice($results, $start, $end - $start);
+
+            if (count($offersToShow) > 0) {
+                foreach ($offersToShow as $row) {
                                   $jobTitle = $row['JobTitle'];
                                   $companyName =$row['CompanyName'];
                                   $jobDescription = $row['JobDescription'];
@@ -257,6 +266,15 @@
 
                                 }
                           ?>
+                          <div class="pagination">
+                <?php if ($currentPage > 1): ?>
+                    <a href="?page=<?php echo $currentPage - 1; ?>" class="arrow left-arrow">&larr;</a>
+                <?php endif; ?>
+
+                <?php if ($currentPage < $totalPages): ?>
+                    <a href="?page=<?php echo $currentPage + 1; ?>" class="arrow right-arrow">&rarr;</a>
+                <?php endif; ?>
+            </div>
                       </div>
                   </main>
               </div>
@@ -311,7 +329,36 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
       <style>
-        
+         .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 1.5rem;
+    }
+
+    .pagination a {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        margin: 0 0.25rem;
+        background-color: #f5f5f5;
+        color: #333;
+        text-decoration: none;
+        border-radius: 5px;
+        background-color: #6271dd;
+    color: white;
+    }
+
+    .pagination a.arrow {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .pagination a.left-arrow {
+        margin-right: 0.5rem;
+    }
+
+    .pagination a.right-arrow {
+        margin-left: 0.5rem;
+    }
           .intro {
               background-image: url(img/map.svg)!important;
               background-color: #ffff!important;

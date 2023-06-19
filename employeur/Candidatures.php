@@ -61,198 +61,198 @@
         </form>
     </aside>
     <section>
-        <div class="container mt-5 mb-5">
-            <div class="row">
+    <div class="container mt-5 mb-5">
+        <div class="row">
+            <div class="col-md-12">
+                <button id="hamburgerMenu" class="hamburger-menu">&#9776;</button><br><br>
+                <div class="main">
+                    <div class="aboutus col-lg-9 mx-auto">
+                        <div class="aboutus col-lg-12">
+                            <!-- Include jQuery library -->
+                            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-                <div class="col-md-12">
-                    <button id="hamburgerMenu" class="hamburger-menu">&#9776;</button><br><br>
-                    <div class="main">
-                        <div class="aboutus col-lg-9 mx-auto">
-                            <div class="aboutus col-lg-12">
-                                <!-- Include jQuery library -->
-                                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                            <!-- Search form -->
+                            <form id="searchForm" method="GET">
+                                <div class="row mb-4">
+                                    <div class="col-lg-10">
+                                        <select class="custom-select" name="searchJobTitle">
+                                            <option value="">All Job Titles</option>
+                                            <?php
+                                            // Fetch all unique job titles from the database
+                                            $query = "SELECT DISTINCT JobTitle FROM offres WHERE EmployeurID = :employeurID";
+                                            $stm = $pdo->prepare($query);
+                                            $stm->execute([':employeurID' => $_SESSION['EmployeurID']]);
 
-                                <!-- Search form -->
-
-                                <form id="searchForm" method="GET">
-                                    <div class="row mb-4">
-                                        <div class="col-lg-10">
-                                    <select class="custom-select" name="searchJobTitle">
-                                        <option value="">All Job Titles</option>
-                                        <?php
-                                        // Fetch all unique job titles from the database
-                                        $query = "SELECT DISTINCT JobTitle FROM offres WHERE EmployeurID = :employeurID";
-                                        $stm = $pdo->prepare($query);
-                                        $stm->execute([':employeurID' => $_SESSION['EmployeurID']]);
-
-                                        while ($ro = $stm->fetch(PDO::FETCH_ASSOC)) {
-                                            $jobTitle = $ro['JobTitle'];
-                                            $selected = (isset($_GET['searchJobTitle']) && $_GET['searchJobTitle'] == $jobTitle) ? 'selected' : '';
-                                            echo '<option value="' . $jobTitle . '" ' . $selected . '>' . $jobTitle . '</option>';
-                                        }
-                                        ?>
-                                    </select>
-                                        </div>
-                                        <div class="col-lg-2">
-
-                                    <select class="custom-select" name="searchStatus">
-                                        <option value="">All Status</option>
-                                        <option value="En attente" <?php if (isset($_GET['searchStatus']) && $_GET['searchStatus'] == 'En attente') echo 'selected'; ?>>En attente</option>
-                                        <option value="Interview" <?php if (isset($_GET['searchStatus']) && $_GET['searchStatus'] == 'Interview') echo 'selected'; ?>>Interview</option>
-                                        <option value="Reject" <?php if (isset($_GET['searchStatus']) && $_GET['searchStatus'] == 'Reject') echo 'selected'; ?>>Reject</option>
-                                    </select>
-                                        </div>
-                                        </div>
-                                </form>
+                                            while ($ro = $stm->fetch(PDO::FETCH_ASSOC)) {
+                                                $jobTitle = $ro['JobTitle'];
+                                                $selected = (isset($_GET['searchJobTitle']) && $_GET['searchJobTitle'] == $jobTitle) ? 'selected' : '';
+                                                echo '<option value="' . $jobTitle . '" ' . $selected . '>' . $jobTitle . '</option>';
+                                            }
+                                            ?>
+                                        </select>
                                     </div>
+                                    <div class="col-lg-2">
+                                        <select class="custom-select" name="searchStatus">
+                                            <option value="">All Status</option>
+                                            <option value="En attente" <?php if (isset($_GET['searchStatus']) && $_GET['searchStatus'] == 'En attente') echo 'selected'; ?>>En attente</option>
+                                            <option value="Interview" <?php if (isset($_GET['searchStatus']) && $_GET['searchStatus'] == 'Interview') echo 'selected'; ?>>Interview</option>
+                                            <option value="Reject" <?php if (isset($_GET['searchStatus']) && $_GET['searchStatus'] == 'Reject') echo 'selected'; ?>>Reject</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <?php
+                include 'includes/config.php';
+
+                // Start the session if it hasn't been started already
+                if (!isset($_SESSION)) {
+                    session_start();
+                }
+
+                // Set default values for search parameters
+                $searchJobTitle = '';
+                $searchStatus = '';
+
+                // Check if search parameters are provided
+                if (isset($_GET['searchJobTitle'])) {
+                    $searchJobTitle = $_GET['searchJobTitle'];
+                }
+
+                if (isset($_GET['searchStatus'])) {
+                    $searchStatus = $_GET['searchStatus'];
+                }
+
+                // Modify the SQL query to include the search parameters
+                $query = "SELECT i.InscriptionID, i.JobID, i.CVID, i.CandidateID, i.ApplicationDate, i.Status, o.JobTitle, o.city, o.type_post, o.date_publee, c.full_name, c.email, cv.Filename, cv.cover_letter
+                FROM inscription i
+                INNER JOIN offres o ON i.JobID = o.JobID
+                INNER JOIN candidate c ON i.CandidateID = c.CandidateID
+                INNER JOIN cv ON i.CVID = cv.CVID
+                WHERE o.EmployeurID = :employeurID";
+
+                // Check if search parameters are provided and modify the query accordingly
+                if (!empty($searchJobTitle)) {
+                    $query .= " AND o.JobTitle = :jobTitle";
+                }
+
+                if (!empty($searchStatus)) {
+                    $query .= " AND i.Status = :status";
+                }
+
+                $stmt = $pdo->prepare($query);
+
+                // Bind values to the parameters
+                $stmt->bindValue(':employeurID', $_SESSION['EmployeurID']);
+
+                if (!empty($searchJobTitle)) {
+                    $stmt->bindValue(':jobTitle', $searchJobTitle);
+                }
+
+                if (!empty($searchStatus)) {
+                    $stmt->bindValue(':status', $searchStatus);
+                }
+
+                $stmt->execute();
+
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                if (empty($results)) {
+                    echo '
+                    <div class="container mt-5 mb-5">
+                        <div class="row">
+                            <div class="aboutus col-lg-9 mx-auto">
+                                <h1>No candidates found.</h1>
                             </div>
                         </div>
-                    <?php
-                    include 'includes/config.php';
+                    </div>';
+                } else {
+                    foreach ($results as $row) {
+                        $inscriptionID = $row['InscriptionID'];
+                        $JobTitle = $row['JobTitle'];
+                        $jobID = $row['JobID'];
+                        $cvid = $row['CVID'];
+                        $candidateID = $row['CandidateID'];
+                        $applicationDate = $row['ApplicationDate'];
+                        $status = $row['Status'];
+                        $jobTitle = $row['JobTitle'];
+                        $city = $row['city'];
+                        $typePost = $row['type_post'];
+                        $datePublee = $row['date_publee'];
+                        $fullName = $row['full_name'];
+                        $email = $row['email'];
+                        $filename = $row['Filename'];
+                        $coverLetter = $row['cover_letter'];
 
-                    // Start the session if it hasn't been started already
-                    if (!isset($_SESSION)) {
-                        session_start();
-                    }
-
-                    // Set default values for search parameters
-                    $searchJobTitle = '';
-                    $searchStatus = '';
-
-                    // Check if search parameters are provided
-                    if (isset($_GET['searchJobTitle'])) {
-                        $searchJobTitle = $_GET['searchJobTitle'];
-                    }
-
-                    if (isset($_GET['searchStatus'])) {
-                        $searchStatus = $_GET['searchStatus'];
-                    }
-
-                    // Modify the SQL query to include the search parameters
-                    $query = "SELECT i.InscriptionID, i.JobID, i.CVID, i.CandidateID, i.ApplicationDate, i.Status, o.JobTitle, o.city, o.type_post, o.date_publee, c.full_name, c.email, cv.Filename, cv.cover_letter
-FROM inscription i
-INNER JOIN offres o ON i.JobID = o.JobID
-INNER JOIN candidate c ON i.CandidateID = c.CandidateID
-INNER JOIN cv ON i.CVID = cv.CVID
-WHERE o.EmployeurID = :employeurID";
-
-                    // Check if search parameters are provided and modify the query accordingly
-                    if (!empty($searchJobTitle)) {
-                        $query .= " AND o.JobTitle = :jobTitle";
-                    }
-
-                    if (!empty($searchStatus)) {
-                        $query .= " AND i.Status = :status";
-                    }
-
-                    $stmt = $pdo->prepare($query);
-
-                    // Bind values to the parameters
-                    $stmt->bindValue(':employeurID', $_SESSION['EmployeurID']);
-
-                    if (!empty($searchJobTitle)) {
-                        $stmt->bindValue(':jobTitle', $searchJobTitle);
-                    }
-
-                    if (!empty($searchStatus)) {
-                        $stmt->bindValue(':status', $searchStatus);
-                    }
-
-                    $stmt->execute();
-
-                    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                    if (empty($results)) {
+                        // Generate the HTML for each job offer
                         echo '
-                                  <div class="container mt-5 mb-5">
-                                    <div class="row">
-                                            <div class="aboutus col-lg-9 mx-auto">
-                                                <h1>No candidates found.</h1>
-                                            </div>
-                                    </div>
-                                  </div>          
-                        
-                        ';
-                    } else {
-                        foreach ($results as $row) {
-                            $inscriptionID = $row['InscriptionID'];
-                            $JobTitle = $row['JobTitle'];
-                            $jobID = $row['JobID'];
-                            $cvid = $row['CVID'];
-                            $candidateID = $row['CandidateID'];
-                            $applicationDate = $row['ApplicationDate'];
-                            $status = $row['Status'];
-                            $jobTitle = $row['JobTitle'];
-                            $city = $row['city'];
-                            $typePost = $row['type_post'];
-                            $datePublee = $row['date_publee'];
-                            $fullName = $row['full_name'];
-                            $email = $row['email'];
-                            $filename = $row['Filename'];
-                            $coverLetter = $row['cover_letter'];
+    <div class="aboutus col-lg-9 mx-auto">
+        <div class="img">
+            <div class="form-outline-profil col-lg-12 mt-2">
+                <div class="info">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <p class="p domain_job">' . $fullName . '</p>
+                            <p class="p">' . $email . '</p>
+                            <p class="p">Candidateur Post: ' . $JobTitle . '</p>';
 
-                            // Generate the HTML for each job offer
+                        if (isset($status) && $status == "En attente") {
                             echo '
-        <div class="aboutus col-lg-9 mx-auto">
-            <div class="img">
-                <div class="form-outline-profil col-lg-12 mt-2">
-                    <div class="info">
-                        <div class="row">
-                            <div class="col-lg-8">
-                                <p class="p domain_job">' . $fullName . '</p>
-                                <p class="p">' . $email . '</p>
-                                <p class="p">Candidateur Post : ' . $JobTitle . '</p>';
-
-                            if (isset($status) && $status == "En attente") {
-                                echo '<div class="alert alert-primary" role="alert">';
-                                echo '<p class="p">Etat: ' . $status . '</p>';
-                                echo '</div>';
-                            } elseif (isset($status) && $status == 'Interview') {
-                                echo '<div class="alert alert-success " role="alert">';
-                                echo '<p class="p">Etat: ' . $status . '</p>';
-                                echo '</div>';
-                            } elseif (isset($status) && $status == 'Reject') {
-                                echo '<div class="alert alert-danger" role="alert">';
-                                echo '<p class="p">Etat: ' . $status . '</p>';
-                                echo '</div>';
-                            }
-
+        <div class="alert alert-primary" role="alert">
+            <p class="p">Etat: ' . $status . '</p>
+        </div>';
+                        } elseif (isset($status) && $status == 'Interview') {
                             echo '
-        
-        <h1 id="h1_' . $inscriptionID . '" class="domain_job" style="display: none; margin-top: 8px">CV :</h1>
-        <button class="downloadBtn" id="downloadBtn" onclick="downloadPDF(\'../uploads/' . $filename . '\')"  style="display: none;">Download Cv <i class="fas fa-download"></i></button>
-
-        <div id="pdf-container_' . $inscriptionID . '" style="display: none; height: 324px!important;">
-            <embed src="../uploads/' . $filename . '" width="100%" height="100%" id="filename_' . $inscriptionID . '" style="display: none;">
-        </div>
-        <h1 id="h2_' . $inscriptionID . '" class="domain_job" style="display: none; margin-top: 8px">Cover Letter: </h1>
-        <p class="p coverLetter" id="coverLetter_' . $inscriptionID . '" style="display: none;">' . nl2br($coverLetter) . '</p>
-        <button class="showMoreBtn" onclick="showMore(\'filename_' . $inscriptionID . '\', \'pdf-container_' . $inscriptionID . '\', \'h1_' . $inscriptionID . '\', \'h2_' . $inscriptionID . '\', \'coverLetter_' . $inscriptionID . '\')">Show More</button>
-
-    </div>
-    <div class="col-lg-4 text-right">
-        <div class="button-container">
-            <a class="a Interview" href="includes/Interview.php?inscriptionID=' . $inscriptionID . '">Interview </a>
-            <a  class="a" href="includes/Reject.php?inscriptionID=' . $inscriptionID . '">Inreject </a>
-        </div>
-    </div>
-
-</div>
-</div>
-</div>
-</div>
-
-';
+        <div class="alert alert-success" role="alert">
+            <p class="p">Etat: ' . $status . '</p>
+        </div>';
+                        } elseif (isset($status) && $status == 'Reject') {
+                            echo '
+        <div class="alert alert-danger" role="alert">
+            <p class="p">Etat: ' . $status . '</p>
+        </div>';
                         }
+
+                        echo '
+    <h1 id="h1_' . $inscriptionID . '" class="domain_job" style="display: none; margin-top: 8px">CV :</h1>
+    <button class="downloadBtn" id="downloadBtn" onclick="downloadPDF(\'../uploads/' . $filename . '\')"  style="display: none;">Download CV <i class="fas fa-download"></i></button>
+
+    <div id="pdf-container_' . $inscriptionID . '" style="display: none; height: 324px!important;">
+        <embed src="../uploads/' . $filename . '" width="100%" height="100%" id="filename_' . $inscriptionID . '" style="display: none;">
+    </div>
+    <h1 id="h2_' . $inscriptionID . '" class="domain_job" style="display: none; margin-top: 8px">Cover Letter: </h1>
+    <p class="p coverLetter" id="coverLetter_' . $inscriptionID . '" style="display: none;">' . nl2br($coverLetter) . '</p>
+    <button class="showMoreBtn" onclick="showMore(\'filename_' . $inscriptionID . '\', \'pdf-container_' . $inscriptionID . '\', \'h1_' . $inscriptionID . '\', \'h2_' . $inscriptionID . '\', \'coverLetter_' . $inscriptionID . '\')">Show More</button>
+
+</div>
+<div class="col-lg-4 text-right">
+    <div class="button-container">
+        <a class="a Interview" href="includes/Interview.php?inscriptionID=' . $inscriptionID . '">Interview</a>
+        <a class="a" href="includes/Reject.php?inscriptionID=' . $inscriptionID . '">Reject</a>
+    </div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>';
+
                     }
-                    ?>
+                }
+                ?>
 
 
-                </div>
-                </div>
-            </div>
-        </div>
-    </section>
+
+    </div>
+    </div>
+    </div>
+
+</section>
+
 
 
 

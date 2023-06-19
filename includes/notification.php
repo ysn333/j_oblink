@@ -245,7 +245,7 @@ $pdo->exec($clearNotificationsQuery);
             </div>
         </div>
         <div class="copyright">
-            <p>&copy; 2022 YOUR-DOMAIN | Created by <a href="https://firmbee.com/solutions/project-management/" title="Firmbee - Free Project Management System" target="_blank">Firmbee.com</a></p>
+        <p>&copy; 2023| Created by <a href="solicode.com" title="" target="">solicode.com</a></p>
             <!--
             This template is licenced under Attribution 3.0 (CC BY 3.0 PL),
             You are free to: Share and Adapt. You must give appropriate credit, you may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.

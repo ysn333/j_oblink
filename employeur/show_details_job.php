@@ -53,7 +53,7 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
                 <h6>Dashbord employeur</h6>
                 <label for="country_aside" class="hide"></label>
                 <a href="index.php" class="Dashbord"><i class="fas fa-plus-circle" style="color: white"></i> Post an offer</a>
-                <a href="Offres_D'emploi.php" class="active"><i class="fas fa-briefcase"></i> Offres D'emploi</a>
+                <a href="Offres_D_emploi.php" class="active"><i class="fas fa-briefcase"></i> Offres D'emploi</a>
                 <a href="Candidatures.php"><i class="fas fa-file-alt"></i> Candidatures</a>
 
                 <!-- <a href="../message.php">Message</a> -->

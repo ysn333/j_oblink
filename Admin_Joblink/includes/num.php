@@ -3,7 +3,7 @@
 
 
 
-    $success_count = $pdo->query("SELECT COUNT(*) FROM inscription WHERE Status = 'Accepté'")->fetchColumn();
+    $success_count = $pdo->query("SELECT COUNT(*) FROM inscription WHERE Status = 'Interview'")->fetchColumn();
     $total_count = $pdo->query("SELECT COUNT(*) FROM inscription")->fetchColumn();
     if ($total_count > 0) 
         $success_rate = round(($success_count / $total_count) * 100, 2);
